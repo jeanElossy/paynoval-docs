@@ -1,28 +1,188 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>PayNoval Docs</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PayNoval — API Docs</title>
+  <meta name="description" content="Documentation publique PayNoval : Gateway API et API Interne.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%230d7e58'/%3E%3Cpath d='M30 55l12 12 28-34' stroke='%23fff' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style>
-    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:#f6faf7}
-    .wrap{max-width:960px;margin:40px auto;padding:0 16px}
-    h1{font-size:32px;margin:0 0 12px}
-    p{color:#0f4f3b}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
-    .card{background:#fff;border:1px solid #e8f5ef;border-radius:14px;padding:16px;text-decoration:none;color:#0d7e58;font-weight:800;box-shadow:0 4px 20px #0d7e580f}
-    .card:hover{transform:translateY(-2px);box-shadow:0 8px 28px #0d7e581a}
-    small{display:block;color:#0f4f3bbb;font-weight:600;margin-top:6px}
+    :root{
+      --brand:#0d7e58;         /* vert PayNoval principal */
+      --brand-2:#23b586;       /* accent */
+      --bg:#f6faf7;
+      --card:#ffffff;
+      --ink:#0b2e24;
+      --muted:#0b2e2488;
+      --ring:#0d7e5826;
+      --border:#e8f5ef;
+    }
+    @media (prefers-color-scheme:dark){
+      :root{
+        --bg:#0a1512;
+        --card:#0e1d19;
+        --ink:#e8fffa;
+        --muted:#e8fffab3;
+        --ring:#0d7e5840;
+        --border:#0d2d25;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,ui-sans-serif,Segoe UI,Arial,Apple Color Emoji,Noto Color Emoji,Segoe UI Emoji;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #23b5861a 0, transparent 50%),
+        radial-gradient(1200px 600px at 110% 10%, #0d7e581a 0, transparent 50%),
+        var(--bg);
+      color:var(--ink);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* container */
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+
+    /* header / brand */
+    .nav{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+    .brand img{height:34px;width:auto;display:block}
+    .brand .name{font-weight:800;letter-spacing:.2px}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;font-size:.82rem;
+      background:linear-gradient(180deg, #ffffffAA, #ffffff33);
+      border:1px solid var(--border);
+      backdrop-filter:blur(6px)
+    }
+
+    /* hero */
+    .hero{
+      position:relative;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg,#ffffffa6,#ffffff12), var(--card);
+      border-radius:18px;padding:32px 26px;margin:10px 0 26px;
+      box-shadow:0 10px 40px var(--ring);
+      overflow:hidden
+    }
+    .hero h1{margin:0 0 10px;font-size:clamp(28px,4.6vw,40px);line-height:1.08}
+    .hero p{margin:0;color:var(--muted);max-width:72ch}
+    .hero .cta{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      appearance:none;border:0;cursor:pointer;
+      padding:10px 14px;border-radius:12px;font-weight:700;text-decoration:none
+    }
+    .btn-primary{
+      background:linear-gradient(180deg,var(--brand),#0a5e43);
+      color:#fff;box-shadow:0 8px 24px #0d7e5833;
+    }
+    .btn-outline{
+      color:var(--brand);background:transparent;border:1.5px solid var(--brand);
+    }
+    .hero::after{
+      content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, var(--brand-2), var(--brand));
+      filter:blur(24px);opacity:.15;transform:rotate(12deg)
+    }
+
+    /* grid cards */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:10px}
+    .card{
+      position:relative;background:var(--card);border:1px solid var(--border);
+      border-radius:16px;padding:18px;box-shadow:0 10px 28px var(--ring);
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      text-decoration:none;color:inherit
+    }
+    .card:hover{transform:translateY(-3px);box-shadow:0 16px 36px var(--ring);border-color:#23b58680}
+    .card h3{margin:6px 0 6px;font-size:1.1rem}
+    .card p{margin:0;color:var(--muted)}
+    .chip{
+      display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.3px;
+      padding:4px 8px;border-radius:999px;background:#23b5861a;color:#0d7e58;border:1px solid #23b58633
+    }
+    .links{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .link{
+      font-weight:700;font-size:.92rem;color:var(--brand);text-decoration:none;
+      border-bottom:1px dashed #23b58666;padding-bottom:2px
+    }
+
+    /* footer */
+    footer{margin-top:36px;color:var(--muted);font-size:.92rem;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+    .sep{opacity:.35;margin:0 6px}
+
+    /* small helper logo placeholder in case file missing */
+    .logo-fallback{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:var(--brand);color:#fff;font-weight:800}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>PayNoval — Documentation API</h1>
-    <p>Sélectionnez l’API à consulter :</p>
-    <div class="cards">
-      <a class="card" href="./gateway.html">Gateway API <small>Routage multi-providers</small></a>
-      <a class="card" href="./internal.html">Interne PayNoval <small>Transferts PayNoval↔PayNoval</small></a>
+    <!-- Top bar -->
+    <div class="nav">
+      <a class="brand" href="./">
+        <!-- Remplace src par le chemin de TON logo -->
+        <!-- Exemple: ./assets/logo.svg (ajoute ton fichier dans public/assets/) -->
+        <img src="./assets/logo.svg" alt="PayNoval" onerror="this.outerHTML='<span class=&quot;logo-fallback&quot;>P</span>'">
+        <span class="name">PayNoval</span>
+      </a>
+      <span class="badge" title="Statut de la plateforme">● En ligne &nbsp;|&nbsp; Docs publiques</span>
     </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Documentation API PayNoval</h1>
+      <p>Accédez aux spécifications et guides pour intégrer la passerelle multi-providers (Gateway) et l’API interne PayNoval ↔ PayNoval. Authentification <code>Bearer</code>, traçabilité <code>X-Request-Id</code>, webhooks… tout est prêt.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="./gateway.html">Ouvrir Gateway</a>
+        <a class="btn btn-outline" href="./internal.html">Ouvrir Interne</a>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="grid">
+      <a class="card" href="./gateway.html">
+        <span class="chip">Gateway API</span>
+        <h3>Routage vers les microservices providers</h3>
+        <p>Liste des endpoints, sécurité Bearer, erreurs types, et simulateur de frais.</p>
+        <div class="links">
+          <a class="link" href="./gateway.html">Docs</a>
+          <a class="link" href="./specs/gateway.yaml" download>OpenAPI YAML</a>
+        </div>
+      </a>
+
+      <a class="card" href="./internal.html">
+        <span class="chip">Interne</span>
+        <h3>Transferts Wallet PayNoval ↔ PayNoval</h3>
+        <p>Initiation, confirmation, remboursement, webhooks &amp; rôles admin.</p>
+        <div class="links">
+          <a class="link" href="./internal.html">Docs</a>
+          <a class="link" href="./specs/internal.yaml" download>OpenAPI YAML</a>
+        </div>
+      </a>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> PayNoval — Tous droits réservés</div>
+      <div>
+        <span>Dernier build GitHub Pages</span>
+        <span class="sep">•</span>
+        <a class="link" href="https://github.com/jeanElossy/paynoval-docs/actions" target="_blank" rel="noopener">Actions</a>
+      </div>
+    </footer>
   </div>
+
+  <script>
+    // année dynamique
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
+
+
+
+<!-- npm run docs:build
+git add public/*.html specs/*.yaml
+git commit -m "docs: refresh redoc pages"
+git push -->
