@@ -4,22 +4,22 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'scripts/**'
-      - 'public/**'
-      - 'specs/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/deploy-docs.yml'
+      - "public/**"
+      - "specs/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy-docs.yml"
   workflow_dispatch:
 
-
+# Permissions requises par Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
@@ -32,23 +32,27 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: npm
+          node-version: 20
+          cache: "npm"
 
       - name: Install deps
         run: npm ci
 
-      # ⚠️ Mets ici les URLs RAW de tes fichiers openapi.yaml
+      # Si tu préfères configurer ces URLs dans Settings > Variables/Secrets,
+      # supprime les valeurs ci-dessous et expose GATEWAY_SPEC_URL / INTERNAL_SPEC_URL côté repo.
       - name: Fetch OpenAPI specs
         env:
-          GATEWAY_SPEC_URL:  https://raw.githubusercontent.com/jeanElossy/api-gateway/main/api-gateway/docs/openapi.yaml
+          GATEWAY_SPEC_URL: https://raw.githubusercontent.com/jeanElossy/api-gateway/main/api-gateway/docs/openapi.yaml
           INTERNAL_SPEC_URL: https://raw.githubusercontent.com/jeanElossy/api-paynoval/main/docs/openapi.yaml
         run: npm run docs:fetch
 
       - name: Build Redoc pages
         run: npm run docs:build
 
-      - name: Configure GitHub Pages
+      - name: List build output
+        run: ls -lah public
+
+      - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
@@ -56,13 +60,6 @@ jobs:
         with:
           path: public
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deploy
         uses: actions/deploy-pages@v4
