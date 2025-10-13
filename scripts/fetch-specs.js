@@ -1,6 +1,4 @@
-// scripts/fetch-specs.js
-// Cross-platform: télécharge les 2 specs en Node (Node 18+ requis)
-
+// Node 18+ (fetch disponible)
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -11,9 +9,14 @@ const __dirname  = path.dirname(__filename);
 const specsDir = path.join(__dirname, '..', 'specs');
 fs.mkdirSync(specsDir, { recursive: true });
 
-// Lis depuis env si fournis, sinon valeurs par défaut (à remplacer)
-const GATEWAY_SPEC_URL  = process.env.GATEWAY_SPEC_URL  || 'https://raw.githubusercontent.com/<org>/<gateway-repo>/main/docs/openapi.yaml';
-const INTERNAL_SPEC_URL = process.env.INTERNAL_SPEC_URL || 'https://raw.githubusercontent.com/<org>/<internal-repo>/main/docs/openapi.yaml';
+// ✅ Remplace automatiquement si des variables d'env sont fournies
+const GATEWAY_SPEC_URL  =
+  process.env.GATEWAY_SPEC_URL
+  || 'https://raw.githubusercontent.com/jeanElossy/api-gateway/main/api-gateway/docs/openapi.yaml';
+
+const INTERNAL_SPEC_URL =
+  process.env.INTERNAL_SPEC_URL
+  || 'https://raw.githubusercontent.com/jeanElossy/api-paynoval/main/docs/openapi.yaml';
 
 async function download(url, outPath) {
   console.log(`➡️  Fetch ${url}`);
