@@ -5,11 +5,15 @@
   "scripts": {
     "docs:fetch": "node scripts/fetch-specs.js",
     "docs:lint": "redocly lint specs/*.yaml",
-    "docs:build": "npm run docs:fetch && redocly build-docs specs/gateway.yaml -o public/gateway.html --title=\"PayNoval Gateway API\" && redocly build-docs specs/internal.yaml -o public/internal.html --title=\"PayNoval Internal API\"",
-    "docs:serve": "http-server public -p 5050 -c-1"
+    "docs:build": "redocly build-docs specs/gateway.yaml -o public/gateway.html --config redocly.yaml --title=\"PayNoval Gateway API\" && redocly build-docs specs/internal.yaml -o public/internal.html --config redocly.yaml --title=\"PayNoval Internal API\"",
+    "docs:serve": "http-server public -p 5050 -c-1",
+    "docs:preview": "redocly preview-docs specs/gateway.yaml --port 5051 --config redocly.yaml"
   },
   "devDependencies": {
-    "@redocly/cli": "2.5.1",
+    "@redocly/cli": "^2.5.1",
     "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

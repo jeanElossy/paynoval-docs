@@ -1,0 +1,37 @@
+extends:
+  - recommended
+
+openapi:
+  theme:
+    colors:
+      primary:
+        main: '#0D7E58'        # vert PayNoval
+      text:
+        primary: '#0F4F3B'
+        secondary: '#2b463e'
+      http:
+        get:    '#0D7E58'
+        post:   '#0E8F63'
+        put:    '#C47F17'
+        delete: '#C2463B'
+
+    typography:
+      fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif'
+      fontSize: '14px'
+      headings:
+        fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif'
+        fontWeight: '700'
+
+    sidebar:
+      backgroundColor: '#F6FAF7'
+      width: '300px'
+      textColor: '#0F4F3B'
+      activeTextColor: '#0D7E58'
+
+    rightPanel:
+      backgroundColor: '#0e1b21'
+      textColor: '#e8f1f0'
+      width: '42%'
+
+    logo:
+      gutter: '16px'
