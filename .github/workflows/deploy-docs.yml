@@ -1,4 +1,4 @@
-name: ci: build & deploy redoc docs to GitHub Pages
+name: "ci: build & deploy redoc docs to GitHub Pages"
 
 on:
   push:
@@ -12,7 +12,6 @@ on:
       - ".github/workflows/deploy-docs.yml"
   workflow_dispatch:
 
-# Permissions nécessaires à Pages (et lecture du dépôt)
 permissions:
   contents: read
   pages: write
@@ -41,16 +40,12 @@ jobs:
 
       - name: Fetch OpenAPI specs
         env:
-          # ✅ URLs RAW correctes vers tes 2 yaml
           GATEWAY_SPEC_URL: https://raw.githubusercontent.com/jeanElossy/api-gateway/main/api-gateway/docs/openapi.yaml
           INTERNAL_SPEC_URL: https://raw.githubusercontent.com/jeanElossy/api-paynoval/main/docs/openapi.yaml
         run: npm run docs:fetch
 
       - name: Build Redoc pages
         run: npm run docs:build
-
-      - name: List build output
-        run: ls -lah public
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -64,13 +59,10 @@ jobs:
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
-
-    # ✅ indispensable pour Pages
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy
-        id: deploy
+        id: deployment
         uses: actions/deploy-pages@v4
