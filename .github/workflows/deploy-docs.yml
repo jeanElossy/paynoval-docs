@@ -1,4 +1,4 @@
-name: build: generate public gateway+internal docs
+name: ci: build & deploy redoc docs to GitHub Pages
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
       - ".github/workflows/deploy-docs.yml"
   workflow_dispatch:
 
-# Permissions requises par Pages
+# Permissions nécessaires à Pages (et lecture du dépôt)
 permissions:
   contents: read
   pages: write
@@ -24,24 +24,24 @@ concurrency:
 
 jobs:
   build:
+    name: Build Redoc HTML
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
+          cache: npm
 
       - name: Install deps
         run: npm ci
 
-      # Si tu préfères configurer ces URLs dans Settings > Variables/Secrets,
-      # supprime les valeurs ci-dessous et expose GATEWAY_SPEC_URL / INTERNAL_SPEC_URL côté repo.
       - name: Fetch OpenAPI specs
         env:
+          # ✅ URLs RAW correctes vers tes 2 yaml
           GATEWAY_SPEC_URL: https://raw.githubusercontent.com/jeanElossy/api-gateway/main/api-gateway/docs/openapi.yaml
           INTERNAL_SPEC_URL: https://raw.githubusercontent.com/jeanElossy/api-paynoval/main/docs/openapi.yaml
         run: npm run docs:fetch
@@ -52,14 +52,25 @@ jobs:
       - name: List build output
         run: ls -lah public
 
-      - name: Setup Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload artifact
+      - name: Upload static site artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
-      - name: Deploy to GitHub Pages
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    # ✅ indispensable pour Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Deploy
         id: deploy
         uses: actions/deploy-pages@v4
