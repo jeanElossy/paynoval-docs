@@ -9,7 +9,7 @@
     "docs:serve": "http-server public -p 5050 -c-1"
   },
   "devDependencies": {
-    "@redocly/cli": "^2.5.1",
+    "@redocly/cli": "2.5.1",
     "http-server": "^14.1.1"
   }
 }
